@@ -1,11 +1,3 @@
-"""
-Thuc hanh An toan bao mat thong tin - Tong hop cac thuat toan
-Caesar, Monoalphabetic, Vigenere, Affine, DES, AES, RSA, MD5, SHA-1, SHA-256, Chu ky so RSA-SHA256
-
-Yeu cau: pip install pycryptodome
-Or: & "C:\Users\admin\AppData\Local\Programs\Python\Python313\python.exe" -m pip install pycryptodome
-"""
-
 import string
 import random
 import hashlib
@@ -15,9 +7,7 @@ ALPHABET = string.ascii_uppercase
 ENGLISH_FREQ_ORDER = "ETAOINSHRDLCUMWFGYPBVKJXQZ"  # thu tu tan suat tieng Anh giam dan
 
 
-# =====================================================================
 # 1. MA CAESAR
-# =====================================================================
 def caesar_encrypt(text: str, k: int) -> str:
     """C = (P + k) mod 26"""
     result = []
@@ -40,9 +30,7 @@ def caesar_brute_force(cipher: str) -> list[tuple[int, str]]:
     return [(k, caesar_decrypt(cipher, k)) for k in range(1, 26)]
 
 
-# =====================================================================
 # 2. MONOALPHABETIC CIPHER (ma thay the don bang)
-# =====================================================================
 def mono_generate_key(seed: int | None = None) -> dict[str, str]:
     """Tao bang thay the ngau nhien 26 chu cai, khong trung lap."""
     rng = random.Random(seed)
@@ -75,9 +63,7 @@ def mono_guess_mapping(cipher: str) -> dict[str, str]:
     return {c: p for c, p in zip(ranked, ENGLISH_FREQ_ORDER)}
 
 
-# =====================================================================
 # 3. VIGENERE
-# =====================================================================
 def vigenere_encrypt(text: str, key: str) -> str:
     """C = (P + K) mod 26, K lap lai theo tu khoa. Ky tu khong phai chu giu nguyen."""
     key = key.upper()
@@ -106,9 +92,7 @@ def vigenere_decrypt(text: str, key: str) -> str:
     return "".join(out)
 
 
-# =====================================================================
 # 4. AFFINE
-# =====================================================================
 def gcd(a: int, b: int) -> int:
     while b:
         a, b = b, a % b
@@ -162,9 +146,7 @@ def affine_all_keys() -> list[tuple[int, int]]:
     return [(a, b) for a in range(1, 26) if affine_valid_a(a) for b in range(26)]
 
 
-# =====================================================================
 # 5. DES (dung pycryptodome, dung che do ECB nhu tai lieu)
-# =====================================================================
 from Crypto.Cipher import DES, AES
 from Crypto.Util.Padding import pad, unpad
 
@@ -180,9 +162,7 @@ def des_decrypt(ciphertext: bytes, key8: bytes) -> bytes:
     return unpad(cipher.decrypt(ciphertext), DES.block_size)
 
 
-# =====================================================================
 # 6. AES (AES-128, khuyen dung CBC thay vi ECB)
-# =====================================================================
 def aes_encrypt(plaintext: bytes, key16: bytes) -> tuple[bytes, bytes]:
     """Tra ve (iv, ciphertext). Dung CBC voi IV ngau nhien."""
     iv = AES.get_random_bytes(16)
@@ -201,9 +181,7 @@ def aes_encrypt_ecb(plaintext: bytes, key16: bytes) -> bytes:
     return cipher.encrypt(pad(plaintext, AES.block_size))
 
 
-# =====================================================================
 # 7. RSA (textbook, so nho de hieu nguyen ly)
-# =====================================================================
 def rsa_toy_keygen(p: int, q: int, e: int = 3):
     """Tra ve ((e, n), (d, n)) voi p, q nguyen to nho."""
     n = p * q
@@ -240,9 +218,7 @@ def rsa_keygen_2048():
     return key.e, key.n, key.d
 
 
-# =====================================================================
 # 8. HASH: MD5, SHA-1, SHA-256
-# =====================================================================
 def md5_hex(data: str | bytes) -> str:
     if isinstance(data, str):
         data = data.encode()
@@ -266,10 +242,8 @@ def hamming_distance_hex(h1: str, h2: str) -> int:
     return bin(int(h1, 16) ^ int(h2, 16)).count("1")
 
 
-# =====================================================================
 # 9. CHU KY SO RSA-SHA256 (textbook theo tai lieu)
 #    S = H(M)^d mod n ; xac thuc: H(M) == S^e mod n
-# =====================================================================
 def sign_message(message: str, d: int, n: int) -> int:
     h = int(sha256_hex(message), 16) % n
     return pow(h, d, n)
@@ -281,9 +255,8 @@ def verify_signature(message: str, signature: int, e: int, n: int) -> bool:
     return h1 == h2
 
 
-# =====================================================================
+
 # DEMO
-# =====================================================================
 def _demo():
     print("=" * 60)
     print("1. CAESAR")
